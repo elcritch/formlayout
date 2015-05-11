@@ -1,0 +1,20 @@
+**  pyqt4_to_pyqt5.log  Monday 11. May 2015 11:42  **
+Args: ['../pyqt4topyqt5/pyqt4topyqt5.py', './']
+
+Beginning into: /Users/jaremycreechley/proj/code/formlayout_PyQt5
+
+Processing file: `/Users/jaremycreechley/proj/code/formlayout_PyQt5/advanced.py`
+  No changes needed.
+
+Processing file: `/Users/jaremycreechley/proj/code/formlayout_PyQt5/clonebuild.py`
+  No changes needed.
+
+Processing file: `/Users/jaremycreechley/proj/code/formlayout_PyQt5/formlayout.py`
+  File updated.
+
+Processing file: `/Users/jaremycreechley/proj/code/formlayout_PyQt5/setup.py`
+  No changes needed.
+
+Processing file: `/Users/jaremycreechley/proj/code/formlayout_PyQt5/simple.py`
+  No changes needed.
+

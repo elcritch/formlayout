@@ -11,7 +11,7 @@ Please take a look at formlayout.py for more examples
 (at the end of the script, after the 'if __name__ == "__main__":' line)
 """
 
-from formlayout import fedit
+from formlayout5 import fedit
 
 def create_datalist_example():
     return [('str', 'this is a string'),

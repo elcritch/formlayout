@@ -17,9 +17,9 @@ License version 2 as published by the Free Software Foundation.
 """
 
 import formlayout as module
-name = 'formlayout'
+name = 'formlayout5'
 version = module.__version__
-py_modules = ['formlayout']
+py_modules = ['formlayout5']
 package_data = {}
 description = 'Module for creating Qt form dialogs/widgets to edit various type of parameters, compatible with both PyQt4 and PySide'
 keywords = 'PyQt5 PyQt4 PySide GUI'
@@ -34,10 +34,10 @@ setup(
       name = name,
       version = version,
       description = description,
-      download_url = 'http://%s.googlecode.com/files/%s-%s.zip' % (name, name, version),
-      author = "Pierre Raybaut",
-      author_email = 'pierre.raybaut@gmail.com',
-      url = 'http://code.google.com/p/%s/' % name,
+      # download_url = 'http://%s.googlecode.com/files/%s-%s.zip' % (name, name, version),
+      author = "Jaremy Creechley",
+      author_email = 'creechley@gmail.com',
+      url = 'https://github.com/elcritch/%s' % name,
       license = 'MIT',
       keywords = keywords,
       platforms = ['any'],
