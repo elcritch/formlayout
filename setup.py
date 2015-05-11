@@ -22,7 +22,7 @@ version = module.__version__
 py_modules = ['formlayout']
 package_data = {}
 description = 'Module for creating Qt form dialogs/widgets to edit various type of parameters, compatible with both PyQt4 and PySide'
-keywords = 'PyQt4 PySide GUI'
+keywords = 'PyQt5 PyQt4 PySide GUI'
 classifiers = ['Development Status :: 5 - Production/Stable']
 
 try:

@@ -36,6 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 from __future__ import print_function
 
 # History:
+# 1.0.16: added support for pyqt5
 # 1.0.15: added support for multiline strings
 # 1.0.14: fixed Python 3 support (regression in 1.0.13)
 # 1.0.13: replaced obsolete QColorDialog.getRgba function and fixed other 
@@ -46,7 +47,7 @@ from __future__ import print_function
 # 1.0.7: added support for "Apply" button
 # 1.0.6: code cleaning
 
-__version__ = '1.0.15'
+__version__ = '1.0.16'
 __license__ = __doc__
 
 DEBUG_FORMLAYOUT = False
@@ -57,8 +58,8 @@ import datetime
 
 STDERR = sys.stderr
 
-_modname = os.environ.setdefault('QT_API', 'pyqt')
-assert _modname in ('pyqt', 'pyside')
+_modname = os.environ.setdefault('QT_API', 'pyqt5')
+assert _modname in ('pyqt', 'pyside', 'pyqt5')
 
 if os.environ['QT_API'] == 'pyqt':
     try:
@@ -66,6 +67,22 @@ if os.environ['QT_API'] == 'pyqt':
     except ImportError:
         # Switching to PySide
         os.environ['QT_API'] = _modname = 'pyside'
+
+if os.environ['QT_API'] == 'pyqt5':
+    try:
+        from PyQt5.QtWidgets import QFormLayout
+    except ImportError:
+        raise ImportError("formlayout requires PyQt4 4.4+ (or PySide)")
+    from PyQt5.QtWidgets import (QWidget, QLineEdit, QComboBox, QLabel, QSpinBox,
+                     QStyle, QDialogButtonBox, QHBoxLayout,
+                     QVBoxLayout, QDialog, QPushButton, QCheckBox,
+                     QColorDialog, QTabWidget, QApplication,
+                     QStackedWidget, QDateEdit, QDateTimeEdit,
+                     QFontComboBox, QGridLayout, QTextEdit )
+    from PyQt5.QtGui import (QIcon, QColor, QPixmap, QFont, QFontDatabase, QDoubleValidator)
+    from PyQt5.QtCore import Qt, QSize
+    from PyQt5.QtCore import pyqtSlot as Slot
+    from PyQt5.QtCore import pyqtProperty as Property
 
 if os.environ['QT_API'] == 'pyqt':
     try:
