@@ -526,12 +526,11 @@ class FormDialog(QDialog):
         # Button box
         self.bbox = bbox = QDialogButtonBox(QDialogButtonBox.Ok
                                             |QDialogButtonBox.Cancel)
-        self.formwidget.update_buttons.connect(self.update_buttons)
         if self.apply_callback is not None:
             apply_btn = bbox.addButton(QDialogButtonBox.Apply)
             apply_btn.clicked.connect(self.apply)
-        bbox.accepted.connect(accept)
-        bbox.rejected.connect(reject)
+        bbox.accepted.connect(self.accept)
+        bbox.rejected.connect(self.reject)
         layout.addWidget(bbox)
 
         self.setLayout(layout)
