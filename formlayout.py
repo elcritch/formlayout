@@ -59,11 +59,11 @@ import datetime
 STDERR = sys.stderr
 
 _modname = os.environ.setdefault('QT_API', 'pyqt5')
-assert _modname in ('pyqt', 'pyside', 'pyqt5')
+assert _modname in ('pyqt5')
 
-if os.environ['QT_API'] == 'pyqt':
+if os.environ['QT_API'] == 'pyqt5':
     try:
-        import PyQt4  # analysis:ignore
+        import PyQt5  # analysis:ignore
     except ImportError:
         # Switching to PySide
         os.environ['QT_API'] = _modname = 'pyside'
@@ -72,7 +72,7 @@ if os.environ['QT_API'] == 'pyqt5':
     try:
         from PyQt5.QtWidgets import QFormLayout
     except ImportError:
-        raise ImportError("formlayout requires PyQt4 4.4+ (or PySide)")
+        raise ImportError("formlayout requires PyQt5 4.4+ (or PySide)")
     from PyQt5.QtWidgets import (QWidget, QLineEdit, QComboBox, QLabel, QSpinBox,
                      QStyle, QDialogButtonBox, QHBoxLayout,
                      QVBoxLayout, QDialog, QPushButton, QCheckBox,
@@ -81,34 +81,8 @@ if os.environ['QT_API'] == 'pyqt5':
                      QFontComboBox, QGridLayout, QTextEdit )
     from PyQt5.QtGui import (QIcon, QColor, QPixmap, QFont, QFontDatabase, QDoubleValidator)
     from PyQt5.QtCore import Qt, QSize
-    from PyQt5.QtCore import pyqtSlot as Slot
+    from PyQt5.QtCore import (pyqtSlot as Slot, pyqtSignal as Signal)
     from PyQt5.QtCore import pyqtProperty as Property
-
-if os.environ['QT_API'] == 'pyqt':
-    try:
-        from PyQt4.QtGui import QFormLayout
-    except ImportError:
-        raise ImportError("formlayout requires PyQt4 4.4+ (or PySide)")
-    from PyQt4.QtGui import (QWidget, QLineEdit, QComboBox, QLabel, QSpinBox,
-                     QIcon, QStyle, QDialogButtonBox, QHBoxLayout,
-                     QVBoxLayout, QDialog, QColor, QPushButton, QCheckBox,
-                     QColorDialog, QPixmap, QTabWidget, QApplication,
-                     QStackedWidget, QDateEdit, QDateTimeEdit, QFont,
-                     QFontComboBox, QFontDatabase, QGridLayout, QTextEdit,
-                     QDoubleValidator)
-    from PyQt4.QtCore import Qt, SIGNAL, SLOT, QSize
-    from PyQt4.QtCore import pyqtSlot as Slot
-    from PyQt4.QtCore import pyqtProperty as Property
-
-if os.environ['QT_API'] == 'pyside':
-    from PySide.QtGui import (QWidget, QLineEdit, QComboBox, QLabel, QSpinBox,
-                     QIcon, QStyle, QDialogButtonBox, QHBoxLayout,
-                     QVBoxLayout, QDialog, QColor, QPushButton, QCheckBox,
-                     QColorDialog, QPixmap, QTabWidget, QApplication,
-                     QStackedWidget, QDateEdit, QDateTimeEdit, QFont,
-                     QFontComboBox, QFontDatabase, QGridLayout, QTextEdit,
-                     QDoubleValidator, QFormLayout)
-    from PySide.QtCore import Qt, SIGNAL, SLOT, QSize, Slot, Property
 
 
 # ----+- Python 3 compatibility -+----
@@ -173,13 +147,14 @@ class ColorButton(QPushButton):
     """
     Color choosing push button
     """
-    __pyqtSignals__ = ("colorChanged(QColor)",)
+
+    colorChanged = Signal(QColor)
     
     def __init__(self, parent=None):
         QPushButton.__init__(self, parent)
         self.setFixedSize(20, 20)
         self.setIconSize(QSize(12, 12))
-        self.connect(self, SIGNAL("clicked()"), self.choose_color)
+        self.clicked.connect(self.choose_color)
         self._color = QColor()
     
     def choose_color(self):
@@ -190,11 +165,12 @@ class ColorButton(QPushButton):
     def get_color(self):
         return self._color
     
+
     @Slot(QColor)
     def set_color(self, color):
         if color != self._color:
             self._color = color
-            self.emit(SIGNAL("colorChanged(QColor)"), self._color)
+            self.colorChanged.emit(self._color)
             pixmap = QPixmap(self.iconSize())
             pixmap.fill(color)
             self.setIcon(QIcon(pixmap))
@@ -229,13 +205,11 @@ class ColorLayout(QHBoxLayout):
         QHBoxLayout.__init__(self)
         assert isinstance(color, QColor)
         self.lineedit = QLineEdit(color.name(), parent)
-        self.connect(self.lineedit, SIGNAL("textChanged(QString)"),
-                     self.update_color)
+        self.lineedit.textChanged['QString'].connect(self.update_color)
         self.addWidget(self.lineedit)
         self.colorbtn = ColorButton(parent)
         self.colorbtn.color = color
-        self.connect(self.colorbtn, SIGNAL("colorChanged(QColor)"),
-                     self.update_text)
+        self.colorbtn.colorChanged[QColor].connect(self.update_text)
         self.addWidget(self.colorbtn)
 
     def update_color(self, text):
@@ -403,8 +377,7 @@ class FormWidget(QWidget):
                 field.setValidator(QDoubleValidator(field))
                 dialog = self.get_dialog()
                 dialog.register_float_field(field)
-                self.connect(field, SIGNAL('textChanged(QString)'),
-                             lambda text: dialog.update_buttons())
+                field.textChanged['QString'].connect(lambda text: dialog.update_buttons())
             elif isinstance(value, int):
                 field = QSpinBox(self)
                 field.setRange(-1e9, 1e9)
@@ -478,8 +451,7 @@ class FormComboWidget(QWidget):
         
         self.stackwidget = QStackedWidget(self)
         layout.addWidget(self.stackwidget)
-        self.connect(self.combobox, SIGNAL("currentIndexChanged(int)"),
-                     self.stackwidget, SLOT("setCurrentIndex(int)"))
+        self.combobox.currentIndexChanged[int].connect(self.stackwidget,setCurrentIndex)
         
         self.widgetlist = []
         for data, title, comment in datalist:
@@ -554,13 +526,12 @@ class FormDialog(QDialog):
         # Button box
         self.bbox = bbox = QDialogButtonBox(QDialogButtonBox.Ok
                                             |QDialogButtonBox.Cancel)
-        self.connect(self.formwidget, SIGNAL('update_buttons()'),
-                     self.update_buttons)
+        self.formwidget.update_buttons.connect(self.update_buttons)
         if self.apply_callback is not None:
             apply_btn = bbox.addButton(QDialogButtonBox.Apply)
-            self.connect(apply_btn, SIGNAL("clicked()"), self.apply)
-        self.connect(bbox, SIGNAL("accepted()"), SLOT("accept()"))
-        self.connect(bbox, SIGNAL("rejected()"), SLOT("reject()"))
+            apply_btn.clicked.connect(self.apply)
+        bbox.accepted.connect(accept)
+        bbox.rejected.connect(reject)
         layout.addWidget(bbox)
 
         self.setLayout(layout)
