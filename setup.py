@@ -5,7 +5,7 @@
 # (see formlayout.py for details)
 
 """
-formlayout
+formlayout5
 ==========
 
 Module for creating Qt form dialogs/layouts to edit various type of parameters,
@@ -16,7 +16,7 @@ This software is licensed under the terms of the GNU General Public
 License version 2 as published by the Free Software Foundation.
 """
 
-import formlayout as module
+import formlayout5 as module
 name = 'formlayout5'
 version = module.__version__
 py_modules = ['formlayout5']
